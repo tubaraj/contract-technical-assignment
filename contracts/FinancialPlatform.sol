@@ -83,6 +83,10 @@ contract FinancialPlatform is AccessControl, ReentrancyGuard {
     mapping(uint256 => Approval) public approvals;
     mapping(address => User) public users;
     mapping(address => bool) public registeredUsers;
+    
+    // Add these two arrays for efficient iteration
+    address[] public allUserAddresses;
+    uint256[] public allTransactionIds;
 
     // Events
     event TransactionCreated(uint256 indexed transactionId, address indexed from, address indexed to, uint256 amount);
@@ -156,6 +160,9 @@ contract FinancialPlatform is AccessControl, ReentrancyGuard {
             timestamp: block.timestamp,
             approvalId: 0
         });
+
+        // Add this line to track transaction IDs
+        allTransactionIds.push(transactionId);
 
         emit TransactionCreated(transactionId, msg.sender, to, amount);
     }
@@ -339,6 +346,20 @@ contract FinancialPlatform is AccessControl, ReentrancyGuard {
         return _userId;
     }
 
+    /**
+     * @dev Get all registered users (admin only)
+     */
+    function getAllRegisteredUsers() external view onlyAdmin returns (address[] memory) {
+        return allUserAddresses;
+    }
+
+    /**
+     * @dev Get all transactions (admin only)
+     */
+    function getAllTransactions() external view onlyAdmin returns (uint256[] memory) {
+        return allTransactionIds;
+    }
+
     // Internal functions
     function _registerUser(
         address walletAddress,
@@ -360,6 +381,9 @@ contract FinancialPlatform is AccessControl, ReentrancyGuard {
         });
 
         registeredUsers[walletAddress] = true;
+        
+        // Add this line to track user addresses
+        allUserAddresses.push(walletAddress);
 
         // Grant appropriate roles
         if (role == UserRole.Admin) {

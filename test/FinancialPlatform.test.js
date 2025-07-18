@@ -274,6 +274,52 @@ describe("FinancialPlatform", function () {
     it("Should get correct user count", async function () {
       expect(await financialPlatform.getUserCount()).to.equal(5); // owner + 4 registered users
     });
+
+    it("Should get all registered users (admin only)", async function () {
+      const allUsers = await financialPlatform.getAllRegisteredUsers();
+      expect(allUsers.length).to.equal(5); // owner + 4 registered users
+      
+      // Verify all registered users are included
+      expect(allUsers).to.include(owner.address);
+      expect(allUsers).to.include(await user1.getAddress());
+      expect(allUsers).to.include(await user2.getAddress());
+      expect(allUsers).to.include(await user3.getAddress());
+      expect(allUsers).to.include(await approver1.getAddress());
+    });
+
+    it("Should not allow non-admin to get all registered users", async function () {
+      await expect(
+        financialPlatform.connect(user1).getAllRegisteredUsers()
+      ).to.be.revertedWith("Admin role required");
+    });
+
+    it("Should get all transactions (admin only)", async function () {
+      const allTransactions = await financialPlatform.getAllTransactions();
+      expect(allTransactions.length).to.equal(3);
+      
+      // Verify transaction IDs are correct
+      expect(allTransactions[0]).to.equal(1);
+      expect(allTransactions[1]).to.equal(2);
+      expect(allTransactions[2]).to.equal(3);
+    });
+
+    it("Should not allow non-admin to get all transactions", async function () {
+      await expect(
+        financialPlatform.connect(user1).getAllTransactions()
+      ).to.be.revertedWith("Admin role required");
+    });
+
+    it("Should return empty arrays when no data exists", async function () {
+      // Deploy a fresh contract
+      const FinancialPlatform = await ethers.getContractFactory("FinancialPlatform");
+      const freshPlatform = await FinancialPlatform.deploy();
+      
+      const allUsers = await freshPlatform.getAllRegisteredUsers();
+      const allTransactions = await freshPlatform.getAllTransactions();
+      
+      expect(allUsers.length).to.equal(1); // Only the deployer (admin)
+      expect(allTransactions.length).to.equal(0); // No transactions
+    });
   });
 
   describe("Pending Approvals", function () {
