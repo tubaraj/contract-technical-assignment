@@ -115,15 +115,15 @@ async function main() {
   console.log("Requesting approvals...");
   
   // Request approval for transaction 1
-  await user2Platform.requestApproval(1);
+  await user2Platform.requestApproval(1, "Requesting approval for test transaction"); // Added the required reason parameter
   console.log("Requested approval for transaction 1");
 
   // Request approval for transaction 2
-  await user2Platform.requestApproval(2);
+  await user2Platform.requestApproval(2, "Requesting approval for test transaction"); // Added the required reason parameter
   console.log("Requested approval for transaction 2");
 
   // Request approval for transaction 3
-  await user3Platform.requestApproval(3);
+  await user3Platform.requestApproval(3, "Requesting approval for test transaction"); // Added the required reason parameter
   console.log("Requested approval for transaction 3");
 
   // Process some approvals
