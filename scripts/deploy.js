@@ -81,28 +81,33 @@ async function main() {
   
   // Connect as user2 and create transactions
   const user2Platform = financialPlatform.connect(user2);
+  console.log("Connected to user2");
   
   // Transaction 1
   await user2Platform.createTransaction(
     await user3.getAddress(),
-    ethers.parseEther("1000")
+    ethers.parseEther("1000"),
+    "Test transaction" // Add a description here
   );
   console.log("Created transaction 1");
 
   // Transaction 2
   await user2Platform.createTransaction(
     await user1.getAddress(),
-    ethers.parseEther("2500")
+    ethers.parseEther("2500"),
+    "Test transaction" 
   );
   console.log("Created transaction 2");
 
   // Connect as user3 and create transactions
   const user3Platform = financialPlatform.connect(user3);
+  console.log("Connected to user3");
   
   // Transaction 3
   await user3Platform.createTransaction(
     await user2.getAddress(),
-    ethers.parseEther("500")
+    ethers.parseEther("500"),
+    "Test transaction"
   );
   console.log("Created transaction 3");
 
