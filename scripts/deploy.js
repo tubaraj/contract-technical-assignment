@@ -131,11 +131,15 @@ async function main() {
   const approver1Platform = financialPlatform.connect(approver1);
   
   // Approve transaction 1
-  await approver1Platform.processApproval(1, true);
+  await approver1Platform.processApproval(
+    1,              // approvalId (assuming it's 1 since it's the first approval)
+    true,           // approved (true to approve, false to reject)
+    "Approval granted for test transaction" // reason for the decision
+  );
   console.log("Approved transaction 1");
 
   // Reject transaction 2
-  await approver1Platform.processApproval(2, false);
+  await approver1Platform.processApproval(2, false, "Approval rejected for test transaction");
   console.log("Rejected transaction 2");
 
   // Complete approved transaction
